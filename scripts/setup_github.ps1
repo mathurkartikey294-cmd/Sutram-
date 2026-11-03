@@ -2,7 +2,7 @@
 # Usage: Run this script after installing or authenticating GitHub CLI (`gh auth login`)
 
 param (
-    [string]$RepoName = "sutram",
+    [string]$RepoName = "Sutram-",
     [string]$Visibility = "private"
 )
 

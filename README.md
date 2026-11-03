@@ -139,7 +139,7 @@ The project tasks are distributed across four dedicated team roles. Each role ha
 ### Installation & Execution
 ```bash
 # 1. Clone repository
-git clone <REPO_URL> sutram
+git clone https://github.com/mathurkartikey294-cmd/Sutram-.git
 cd sutram
 
 # 2. Automated setup (installs backend and frontend dependencies)
