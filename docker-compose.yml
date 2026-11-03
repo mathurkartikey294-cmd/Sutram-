@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: sutram-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - MOCK_MODE=true
+      - EVIDENCE_STORE_PATH=/app/evidence_store/originals
+      - WORKING_COPY_PATH=/app/evidence_store/working
+      - ARTIFACTS_PATH=/app/evidence_store/artifacts
+      - REPORTS_PATH=/app/evidence_store/reports
+      - DATABASE_URL=sqlite:////app/data/sutram.db
+    volumes:
+      - ./evidence_store:/app/evidence_store
+      - ./models_cache:/app/models_cache
+      - sutram-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sutram-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  sutram-data:

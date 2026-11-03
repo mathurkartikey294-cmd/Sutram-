@@ -1,0 +1,69 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.local
+.env.*.local
+
+# Build & packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Testing & linting
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Node / Frontend
+node_modules/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+frontend/dist/
+frontend/.vite/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# SUTRAM Runtime Evidence & Models (Forensic isolation: never commit actual evidence or heavy weights)
+evidence_store/
+working_copies/
+models_cache/
+*.weights
+*.onnx
+*.pt
+*.bin
+*.safetensors
+backend/app/storage/originals/*
+backend/app/storage/working/*
+!backend/app/storage/originals/.gitkeep
+!backend/app/storage/working/.gitkeep
+
+# Generated reports & artifacts
+reports_output/
+artifacts_output/
+*.pdf
+*.sig
+*.sqlite3
+backend/sutram.db

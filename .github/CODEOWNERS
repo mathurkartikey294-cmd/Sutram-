@@ -1,0 +1,25 @@
+# SUTRAM Code Ownership
+# Format: <path> <owners>
+
+# Core backend architecture, DB, audit, storage, reporting, fusion, API
+backend/app/core/           @Kartikey
+backend/app/db/             @Kartikey
+backend/app/api/            @Kartikey
+backend/app/pipeline/       @Kartikey
+backend/app/provenance/     @Kartikey
+backend/app/reporting/      @Kartikey
+
+# Image Forensics
+backend/app/detectors/image/ @Shivendra
+
+# Audio Forensics
+backend/app/detectors/audio/ @Saksham
+
+# Video Forensics
+backend/app/detectors/video/ @Saarika
+
+# Frontend Workbench
+frontend/                   @Kartikey
+
+# Documentation & Specifications
+docs/                       @Kartikey @Shivendra @Saksham @Saarika
