@@ -15,3 +15,4 @@ When acting as an AI assistant for SUTRAM:
    - Original evidence in `evidence_store/originals/` is read-only.
    - Use the 5-tier calibrated verbal scale for verdicts.
    - Run `uv run ruff check backend` and `uv run pytest backend/tests` to verify.
+

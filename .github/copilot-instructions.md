@@ -8,3 +8,4 @@ When writing or refactoring code in this repository:
 - Ensure original evidence files are treated as read-only.
 - All scores must map to the standardized 5-tier calibrated verbal scale.
 - Run `ruff check backend` and `pytest backend/tests` to verify changes.
+

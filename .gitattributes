@@ -1,0 +1,33 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Python, documentation, and configuration files use LF
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+*.sh text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.cursorrules text eol=lf
+
+# Windows scripts use CRLF
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.wav binary
+*.mp3 binary
+*.mp4 binary
+*.pt binary
+*.onnx binary
+*.pdf binary

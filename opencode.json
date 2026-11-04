@@ -16,3 +16,4 @@
     "typecheck": "uv run mypy backend/app"
   }
 }
+

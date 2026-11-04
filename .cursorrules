@@ -8,3 +8,4 @@ Before generating or modifying any code:
 4. Never introduce fake, random or ungrounded scores; use status="not_implemented" or deterministic [MOCK] fixtures.
 5. All scores must map to the 5-tier calibrated verbal scale.
 6. Run `uv run ruff check backend` and `uv run pytest backend/tests` to verify.
+
