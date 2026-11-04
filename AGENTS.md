@@ -1,34 +1,54 @@
 # SUTRAM: AI Coding Agents Master Guide (AGENTS.md)
 
-> **SINGLE SOURCE OF TRUTH**: This document governs all autonomous AI coding agents (Antigravity, Claude, Cursor, Copilot) working in the SUTRAM codebase. Every agent must read and comply with the directives, architecture boundaries, and forensic principles outlined below before generating or editing code.
+> **SINGLE SOURCE OF TRUTH**: This document governs all autonomous AI coding agents working in the SUTRAM codebase. Supported agents include **Antigravity**, **OpenCode**, **Claude Code**, **Cursor**, **GitHub Copilot**, and **Gemini CLI**. Every agent must read and comply with the directives, architecture boundaries, and forensic principles outlined below before generating or editing code.
 
 ---
 
-## 1. Project Purpose & System Mission
-**SUTRAM** is an AI-powered Multimedia Forensics Platform engineered specifically for forensic examiners, cyber-crime investigators, lab reviewers, and prosecutors. The platform authenticates digital evidence, localizes tampering, detects generative AI/deepfakes across image, video, and audio modalities, and assesses the legal and evidentiary value of digital media.
+## 1. Supported AI Coding Agents & Discovery Matrix
+
+To empower our distributed team using different AI tools, SUTRAM provides native configuration entrypoints for each major agent ecosystem. All agent configs point back to this document:
+
+| AI Agent / Tool | Primary Config / Pointer File | Instructions & Context |
+|:---|:---|:---|
+| **Google Antigravity** | `AGENTS.md` (root directive) | Full workspace context, subagent workflows, memory & task logs |
+| **OpenCode** | `opencode.json` & `.opencode/` | Terminal agent, automatic toolchain dispatch via `make` |
+| **Claude Code** | `CLAUDE.md` | Anthropic Claude toolchain, subagent delegation |
+| **Cursor** | `.cursorrules` & `.cursor/` | IDE context rules, strict typehint enforcement |
+| **GitHub Copilot** | `.github/copilot-instructions.md` | Workspace chat instructions, PR reviewer guidance |
+| **Gemini CLI / Assist** | `GEMINI.md` & `.gemini/` | Google Developer CLI & Workspace Assistant instructions |
+
+### Agent Operation Rules:
+1. When an agent starts a session for a teammate, it **MUST read the teammate's dedicated task file** in `docs/team/` first.
+2. The agent must strictly respect file boundaries: **never edit files outside the assigned teammate's domain** without cross-agent coordination.
+3. Every code modification must satisfy `make check` (`ruff check`, `mypy`, and `pytest`) before turn completion.
+
+---
+
+## 2. Project Purpose & System Mission
+**SUTRAM** is an AI-powered Multimedia Forensics Platform engineered specifically for forensic examiners, cyber-crime investigators, lab reviewers, and prosecutors. The platform authenticates digital evidence, localizes tampering, detects generative AI/deepfakes across image, video, audio, and electronic document modalities, and assesses the legal and evidentiary value of digital media.
 
 ### The Five Core Deliverables
 1. **Deepfake and Synthetic Media Detection Engine** (Images, Videos, Audio).
-2. **Multimedia Authentication and Tampering Detection Framework** (ELA, Copy-Move, Splices, Container).
+2. **Multimedia & Document Authentication and Tampering Detection Framework** (ELA, Copy-Move, Splices, Container, Native PDF Structure & Revisions).
 3. **Multimedia Provenance and Source Attribution Tool** (C2PA, EXIF/XMP, Hashes, Lineage).
 4. **Explainable AI-Based Forensic Analysis Dashboard** (Dark-themed workbench, heatmaps, timelines, 4-axis assessment).
 5. **Automated Forensic Reporting System** (Signed PDF, JSON, and Bharatiya Sakshya Adhiniyam 2023 Section 63 certificate template).
 
 ---
 
-## 2. Team Structure & Role Specifications
+## 3. Team Structure & Role Specifications
 To prevent merge conflicts and ensure modular development, the codebase is partitioned into four primary role assignments. Detailed individual task specifications are documented in `docs/team/`:
 
 | Team Member | Primary Domain | Task Specification Document |
 |:---|:---|:---|
-| **Kartikey** | Backend Core, Storage, Tamper-Evident Audit Chain, Evidentiary Fusion, API, Reporting & Integration | [`docs/team/KARTIKEY.md`](file:///docs/team/KARTIKEY.md) |
-| **Shivendra** | Image Forensics, ELA, Copy-Move, Metadata, Frequency Anomalies, Deep Synthetic Classifier | [`docs/team/SHIVENDRA.md`](file:///docs/team/SHIVENDRA.md) |
-| **Saksham** | Audio Forensics, Voice Clone Detection, wav2vec 2.0, Splice Cuts, Prosody & Codec Warnings | [`docs/team/SAKSHAM.md`](file:///docs/team/SAKSHAM.md) |
-| **Saarika** | Video Forensics, Frame Sampler, rPPG Pulse, Lip-Sync Lag, Temporal Jitter, GOP & PTS Analysis | [`docs/team/SAARIKA.md`](file:///docs/team/SAARIKA.md) |
+| **Kartikey** | Backend Core, Storage, Tamper-Evident Audit Chain, Evidentiary Fusion, API, Native PDF Tampering, Reporting & Integration | [`docs/team/KARTIKEY.md`](file:///docs/team/KARTIKEY.md) |
+| **Shivendra** | Image Forensics, Document Image Tampering, ELA, Copy-Move, Metadata, Frequency Anomalies, Deep Synthetic Classifier, 3D Lighting | [`docs/team/SHIVENDRA.md`](file:///docs/team/SHIVENDRA.md) |
+| **Saksham** | Audio Forensics, Voice Clone Detection, wav2vec 2.0 / ONNX Probe, Splice Cuts, ENF 50Hz Tracking, Prosody & Codec Warnings | [`docs/team/SAKSHAM.md`](file:///docs/team/SAKSHAM.md) |
+| **Saarika** | Video Forensics, Frame Sampler, POS rPPG Pulse & Coherence, Lip-Sync Lag Correlation, Temporal Jitter, GOP & PTS Analysis | [`docs/team/SAARIKA.md`](file:///docs/team/SAARIKA.md) |
 
 ---
 
-## 3. Mandatory Forensic Principles (Non-Negotiable)
+## 4. Mandatory Forensic Principles (Non-Negotiable)
 
 1. **Evidence is Never Modified (ISO/IEC 27037)**:
    - Original evidence files are ingested into `evidence_store/originals/` with read-only filesystem permissions.
@@ -53,7 +73,7 @@ To prevent merge conflicts and ensure modular development, the codebase is parti
 
 4. **Explainability & Reproducibility**:
    - Every finding must cite: detection method name, algorithm version, input parameters used, and known limitations.
-   - Visual detectors must output verifiable visual artifacts (e.g., ELA heatmap PNG, copy-move match vector PNG, spectrogram PNG).
+   - Visual detectors must output verifiable visual artifacts (e.g., ELA heatmap PNG, copy-move match vector PNG, rPPG pulse curve, spectrogram PNG).
 
 5. **Local / Air-Gapped Operation by Default**:
    - All evidence remains on the local host.
@@ -64,9 +84,9 @@ To prevent merge conflicts and ensure modular development, the codebase is parti
 
 ---
 
-## 4. Detector Plugin Interface (`detectors/base.py`)
+## 5. Detector Plugin Interface (`detectors/base.py`)
 
-Every detector module across image, video, and audio modalities must inherit from `BaseDetector` and register itself in `detectors/registry.py`:
+Every detector module across image, video, audio, and document modalities must inherit from `BaseDetector` and register itself in `detectors/registry.py`:
 
 ```python
 from pathlib import Path
@@ -103,17 +123,9 @@ class BaseDetector:
         raise NotImplementedError("Subclasses must implement analyze()")
 ```
 
-### Self-Registration Pattern
-In each detector file, register with the global registry:
-```python
-from app.detectors.registry import detector_registry
-
-detector_registry.register(MyCustomDetector())
-```
-
 ---
 
-## 5. Coding Conventions & Quality Standards
+## 6. Coding Conventions & Quality Standards
 
 - **Language & Runtime**: Python 3.12 (managed via `uv`), FastAPI, Pydantic v2.
 - **Type Annotations**: Mandatory type hints on all function signatures (`mypy --strict` compliant).
@@ -127,7 +139,7 @@ detector_registry.register(MyCustomDetector())
 
 ---
 
-## 6. Development & Verification Commands
+## 7. Development & Verification Commands
 
 All agents and contributors must test their changes using the project automation:
 ```bash
@@ -157,7 +169,7 @@ make eval
 
 ---
 
-## 7. Definition of Done (DoD)
+## 8. Definition of Done (DoD)
 Before any task or pull request is considered complete:
 1. All new detector classes conform to `BaseDetector` and register in `registry.py`.
 2. Unit tests are added in `backend/tests/` covering both positive and negative cases.

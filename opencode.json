@@ -1,0 +1,18 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "project": "SUTRAM",
+  "description": "AI-Powered Multimedia & Document Forensics Platform",
+  "instructions": [
+    "Read AGENTS.md before editing or running any task.",
+    "Identify your assigned team member role in docs/team/ (KARTIKEY.md, SHIVENDRA.md, SAKSHAM.md, SAARIKA.md).",
+    "Never modify evidence_store/originals/ (ISO/IEC 27037).",
+    "Never generate random or fake scores; map all scores to the 5-tier calibrated verbal scale.",
+    "Verify changes before completion with: make lint && make test"
+  ],
+  "build": {
+    "test": "uv run pytest backend/tests",
+    "lint": "uv run ruff check backend",
+    "format": "uv run ruff format backend",
+    "typecheck": "uv run mypy backend/app"
+  }
+}

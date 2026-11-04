@@ -8,10 +8,10 @@ This document defines the task division, ownership boundaries, and milestone sch
 
 | Member | Primary Role | Owned Components | Dedicated Specification |
 |:---|:---|:---|:---|
-| **Kartikey** | Backend Core, Provenance, Reporting & Integration Lead | `backend/app/core/`, `backend/app/db/`, `backend/app/pipeline/`, `backend/app/provenance/`, `backend/app/reporting/`, `backend/app/api/`, `frontend/` integration | [`docs/team/KARTIKEY.md`](file:///docs/team/KARTIKEY.md) |
-| **Shivendra** | Lead Image Forensics Engineer | `backend/app/detectors/image/` (ELA, Copy-Move, Metadata, Noise/Frequency, Face Blend, Deep Classifier, Splicing) | [`docs/team/SHIVENDRA.md`](file:///docs/team/SHIVENDRA.md) |
-| **Saksham** | Lead Audio Forensics Engineer | `backend/app/detectors/audio/` (wav2vec 2.0, Splice Discontinuities, Prosody/Pauses, Spectral Mel-Spectrogram, Codec Guard) | [`docs/team/SAKSHAM.md`](file:///docs/team/SAKSHAM.md) |
-| **Saarika** | Lead Video Forensics Engineer | `backend/app/detectors/video/` (Frame Sampler, rPPG Pulse, Lip-Sync Lag, Temporal Jitter, Container, GOP Cadence, PTS Jitter) | [`docs/team/SAARIKA.md`](file:///docs/team/SAARIKA.md) |
+| **Kartikey** | Backend Core, Provenance, Reporting & Integration Lead | `backend/app/core/`, `backend/app/db/`, `backend/app/pipeline/`, `backend/app/provenance/` (incl. Native PDF tampering), `backend/app/reporting/`, `backend/app/api/`, `frontend/` integration | [`docs/team/KARTIKEY.md`](file:///docs/team/KARTIKEY.md) |
+| **Shivendra** | Lead Image Forensics Engineer | `backend/app/detectors/image/` (ELA, Copy-Move, Document Tampering, Metadata, Noise/Frequency, Face Blend, Deep Classifier, 3D Lighting) | [`docs/team/SHIVENDRA.md`](file:///docs/team/SHIVENDRA.md) |
+| **Saksham** | Lead Audio Forensics Engineer | `backend/app/detectors/audio/` (wav2vec 2.0 / ONNX Probe, Splice Discontinuities, ENF 50Hz Tracking, Prosody/Pauses, Spectral Mel-Spectrogram, Codec Guard) | [`docs/team/SAKSHAM.md`](file:///docs/team/SAKSHAM.md) |
+| **Saarika** | Lead Video Forensics Engineer | `backend/app/detectors/video/` (Frame Sampler, POS rPPG Pulse & Coherence, Lip-Sync Lag, Temporal Jitter, Container, GOP Cadence, PTS Jitter) | [`docs/team/SAARIKA.md`](file:///docs/team/SAARIKA.md) |
 
 ---
 
@@ -22,17 +22,17 @@ gantt
     title SUTRAM Development Milestones
     dateFormat  YYYY-MM-DD
     section Phase 0
-    Repository Setup, Agent Master Specs & Docs :p0, 2026-11-03, 1d
+    Repository Setup, Agent Master Specs & Multi-Agent Bridges :p0, 2026-11-03, 1d
     section Phase 1
     Backend Core, DB, Hash-Chained Audit & Storage (Kartikey) :p1, after p0, 2d
     Deterministic Image Detectors ELA & Copy-Move (Shivendra) :p1b, after p0, 2d
     Audio Splice & Codec Quality Guard (Saksham) :p1c, after p0, 2d
     Video Frame Sampler & Container Forensics (Saarika) :p1d, after p0, 2d
     section Phase 2
-    Evidentiary Assessment 4 Axes & Fusion Engine (Kartikey) :p2, after p1, 2d
-    Frequency Anomalies & Blending Forensics (Shivendra) :p2b, after p1b, 2d
-    Prosodic Pitch & Spectral Artifacts (Saksham) :p2c, after p1c, 2d
-    rPPG Pulse & Lip-Sync Synchronization (Saarika) :p2d, after p1d, 2d
+    Evidentiary Assessment 4 Axes & Native PDF Forensics (Kartikey) :p2, after p1, 2d
+    Document Image Tampering & 3D Lighting (Shivendra) :p2b, after p1b, 2d
+    ENF 50Hz Phase & ONNX Windowed Voice (Saksham) :p2c, after p1c, 2d
+    POS rPPG Coherence & Pure-NumPy Lip-Sync (Saarika) :p2d, after p1d, 2d
     section Phase 3
     Signed PDF/JSON Reporting & BSA 63 Certificate (Kartikey) :p3, after p2, 2d
     Synthetic Classifier Stubs / Pretrained Integration :p3b, after p2, 2d
@@ -48,7 +48,7 @@ gantt
 ### Milestone 1: Core Framework & Deterministic Baselines
 - [ ] **Kartikey**:
   - [ ] Implement ISO/IEC 27037 read-only evidence store and ephemeral working copy generator.
-  - [ ] Implement tamper-evident append-only audit log with SHA-256 hash chaining (`prev_hash`).
+  - [ ] Implement tamper-evident append-only audit log with RFC 8785 canonical JSON hashing (`prev_hash`).
   - [ ] Expose audit verification endpoint `/api/v1/cases/{id}/audit/verify`.
   - [ ] Define shared Pydantic schemas and database models.
 - [ ] **Shivendra**:
@@ -64,19 +64,24 @@ gantt
 
 ### Milestone 2: Advanced Forensic Modules & Evidentiary Synthesis
 - [ ] **Kartikey**:
+  - [ ] Implement Native PDF structure tampering forensics (`provenance/pdf_document.py`): incremental update extraction, font mismatches & OCR layer diffs.
   - [ ] Build weighted-confidence Fusion Engine (`pipeline/fusion.py`) with conflict-to-`INCONCLUSIVE` resolution.
   - [ ] Build 4-Axis Evidentiary Assessment engine (`pipeline/evidentiary_assessment.py`): Integrity, Authenticity, Provenance, Suitability.
   - [ ] Implement Provenance tracker (`provenance/hashing.py`, `provenance/c2pa.py`).
 - [ ] **Shivendra**:
+  - [ ] Implement Document Image Tampering detector (`document_tampering.py`): altered digits halo, cloned rubber stamps & signatures.
+  - [ ] Implement 3D Corneal lighting & reflection consistency (`lighting_experimental.py`): iris highlight position (Hu et al. 2021) & YCbCr chroma/shading gaps.
   - [ ] Implement 2D Fourier power spectrum analysis (`noise_frequency.py`) to detect diffusion/GAN grid artifacts.
   - [ ] Implement `FaceBlendDetector` (`face_blend.py`) analyzing landmark contour sharpness and noise variance.
   - [ ] Implement `DoubleJPEGDetector` (`double_jpeg.py`) analyzing DCT quantization histograms.
 - [ ] **Saksham**:
+  - [ ] Implement CPU-optimized windowed ONNX voice clone detector (`wav2vec_classifier.py` / ONNX probe).
+  - [ ] Implement Electrical Network Frequency 50Hz phase tracking (`spectral.py`).
   - [ ] Implement `ProsodyPausesDetector` (`prosody_pauses.py`) calculating fundamental pitch ($F_0$) jitter and pause duration histograms.
   - [ ] Implement `AudioSpectralDetector` (`spectral.py`) generating Mel-spectrogram artifact PNGs and detecting high-frequency cutoffs.
 - [ ] **Saarika**:
-  - [ ] Implement `RPPGDetector` (`rppg.py`) extracting cardiovascular pulse from facial green-channel fluctuations with SNR quality guard.
-  - [ ] Implement `LipSyncDetector` (`lipsync.py`) measuring aperture-envelope cross-correlation lag.
+  - [ ] Implement POS (Plane-Orthogonal-to-Skin) rPPG pulse extraction & spatial cheek/forehead coherence (`rppg.py`).
+  - [ ] Implement pure-NumPy lip-sync cross-correlation lag ($[-400\text{ms}, +400\text{ms}]$) (`lipsync.py`).
   - [ ] Implement `TemporalInconsistencyDetector` (`temporal.py`) detecting facial landmark jitter and boundary optical flow anomalies.
 
 ### Milestone 3: Reporting, Evaluation & ML Integration
@@ -93,7 +98,7 @@ gantt
 
 ### Milestone 4: Frontend Workbench & Final Demo Polish
 - [ ] Evidence Intake screen with read-only lock confirmation.
-- [ ] Side-by-side / overlay slider for Original vs Heatmaps (ELA, Copy-Move, Grad-CAM).
+- [ ] Side-by-side / overlay slider for Original vs Heatmaps (ELA, Copy-Move, Document Tampering, Grad-CAM).
 - [ ] Synchronized video player with suspicious segment markers and rPPG/lip-sync plots.
 - [ ] Interactive audio waveform and spectrogram viewer.
 - [ ] 4-Axis Evidentiary Assessment cards with "What this means for the case" narrative.

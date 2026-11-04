@@ -1,13 +1,13 @@
 # SUTRAM Task Specification: Saksham (Audio Forensics & Voice Clone Detection Lead)
 
-> **Agent Directive**: If you are an AI coding agent (Antigravity, Claude, Cursor, Copilot) assisting **Saksham**, your scope is defined by this document. Adhere strictly to the forensic integrity principles in `AGENTS.md` and `docs/FORENSIC_STANDARDS.md`. Every finding must be explainable, generate visual audio artifacts (spectrograms with flagged time intervals), express results via the calibrated verbal scale, and explicitly flag low-bitrate compression limitations.
+> **Agent Directive**: If you are an AI coding agent (Antigravity, OpenCode, Claude Code, Cursor, Copilot, Gemini) assisting **Saksham**, your scope is defined by this document. Adhere strictly to the forensic integrity principles in `AGENTS.md` and `docs/FORENSIC_STANDARDS.md`. Every finding must be explainable, generate visual audio artifacts (spectrograms with flagged time intervals), express results via the calibrated verbal scale, and explicitly flag low-bitrate compression limitations.
 
 ---
 
 ## 1. Role Overview & System Responsibilities
 - **Name**: Saksham
 - **Title**: Lead Audio Forensics Engineer
-- **Primary Domain**: Voice cloning detection, synthetic speech recognition (TTS / voice conversion), audio tampering (splices, noise-floor jumps, edit discontinuities), prosodic/pitch unnaturalness, and spectral/codec artifact analysis.
+- **Primary Domain**: Voice cloning detection, synthetic speech recognition (TTS / voice conversion), audio tampering (splices, noise-floor jumps, edit discontinuities, Electrical Network Frequency 50Hz phase tracking), prosodic/pitch unnaturalness, and spectral/codec artifact analysis.
 - **Core Interface**:
   - Subclasses `BaseDetector` from `app.detectors.base`.
   - Self-registers in `app.detectors.registry`.
@@ -20,14 +20,15 @@ You have primary ownership and authority over:
 ```
 backend/app/detectors/audio/
 ├── __init__.py
-├── wav2vec_classifier.py    # Pretrained wav2vec 2.0 anti-spoofing classifier
+├── wav2vec_classifier.py    # Pretrained wav2vec 2.0 & ONNX windowed anti-spoofing classifier
 ├── prosody_pauses.py        # Pitch contour (F0), pause duration distribution, jitter/shimmer
-├── spectral.py             # Mel-spectrogram generation, high-frequency cutoff, phase consistency
+├── spectral.py             # Mel-spectrogram generation, ENF 50Hz tracking, vocoder cutoff
 ├── codec.py                # Re-encoding traces, lossy compression artifacts, telephony limits
 └── splice_discontinuity.py  # Abrupt noise floor jumps, silence edits, zero-crossing violations
 
 backend/tests/
 ├── test_audio_detectors.py # Comprehensive unit tests for all audio modules
+├── test_enf_tracking.py    # Power grid phase continuity tests
 └── test_audio_splicing.py  # Tests on synthetic spliced audio samples
 ```
 
@@ -122,11 +123,31 @@ class ExampleAudioDetector(BaseDetector):
 
 ---
 
+### Task A7: CPU-Optimized Windowed Voice Clone Scoring (`wav2vec_classifier.py` / ONNX probe)
+- **Objective**: Provide instantaneous CPU voice clone scoring without requiring a GPU or downloading gigabyte-sized transformer checkpoints during live field evaluations.
+- **Algorithm**:
+  1. Segment audio into 5-second overlapping sliding windows (step 2.5s).
+  2. Run inference via ONNX Runtime CPU execution provider (`CPUExecutionProvider`) on pooled frame-level acoustic features.
+  3. Generate a temporal suspiciousness score curve across the audio track.
+  4. Output the peak suspicious segment timestamp for examiner inspection.
+
+---
+
+### Task A8: Electrical Network Frequency (ENF) & Phase Continuity (`spectral.py`)
+- **Forensic Principle**: Audio recorded in buildings connected to the AC power grid captures an imperceptible 50 Hz (India/Europe) or 60 Hz (US) hum induced into microphone cables. The electrical grid frequency fluctuates slightly over time, but its phase is strictly continuous.
+- **Algorithm**:
+  1. Apply a narrow bandpass filter around the nominal grid frequency: $[49.8\text{ Hz}, 50.2\text{ Hz}]$.
+  2. Extract the instantaneous phase trajectory using the Hilbert transform: $\phi(t) = \text{unwrap}(\text{angle}(H(x(t))))$.
+  3. In a continuous unedited recording, phase progression $\Delta \phi(t)$ is smooth. Splicing cuts or insertions introduce abrupt discontinuous phase jumps ($\Delta \phi > \pi / 2$).
+  4. Output: `enf_phase_discontinuity_count` and timestamps of flagged cuts.
+
+---
+
 ## 4. Definition of Done for Saksham
-- [ ] All 5 audio detectors implemented in `backend/app/detectors/audio/` with registry auto-registration.
+- [ ] All 7 audio detectors implemented in `backend/app/detectors/audio/` with registry auto-registration.
 - [ ] Splice detector pinpoints artificial noise floor shifts and abrupt cuts with timestamps.
+- [ ] ENF analyzer detects phase discontinuities across power grid hum.
 - [ ] Pitch and pause analyzer computes $F_0$ trajectory and flags unnatural robotic stability.
-- [ ] Spectral analyzer exports high-resolution Mel-spectrogram artifacts.
+- [ ] ONNX windowed voice detector executes rapidly on CPU.
 - [ ] Codec analyzer issues clear forensic suitability warnings on degraded audio.
-- [ ] `uv run pytest backend/tests/test_audio_detectors.py` passes.
-- [ ] Clean linting and strict type checking (`ruff` and `mypy`).
+- [ ] Unit tests pass cleanly (`pytest backend/tests`).
