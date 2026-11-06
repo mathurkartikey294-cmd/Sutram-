@@ -159,7 +159,7 @@ backend/
 
 ## 4. Definition of Done for Kartikey
 - [ ] Ingesting an evidence file computes SHA-256/512, locks original permissions, and logs an audit entry.
-- [ ] Audit log uses RFC 8785 canonical JSON hashing; tampering with any entry causes `verify_case_audit_chain` to fail.
+- [x] Audit log uses RFC 8785 canonical JSON hashing; tampering with any entry causes `verify_case_audit_chain` to fail.
 - [ ] Native PDF detector (`pdf_document.py`) successfully detects incremental updates and font stream anomalies.
 - [ ] Fusion engine correctly marks contradictory high-confidence results as `INCONCLUSIVE`.
 - [ ] Evidentiary assessment outputs all 4 axes with plain-language explanations.
