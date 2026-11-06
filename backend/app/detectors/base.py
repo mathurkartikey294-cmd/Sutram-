@@ -11,7 +11,6 @@ from pydantic import BaseModel, Field
 
 
 class CalibratedScale(StrEnum):
-
     STRONGLY_AUTHENTIC = "Strongly supports authenticity"
     SUPPORTS_AUTHENTIC = "Supports authenticity"
     INCONCLUSIVE = "Inconclusive"

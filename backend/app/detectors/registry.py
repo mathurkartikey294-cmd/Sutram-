@@ -3,10 +3,7 @@ SUTRAM Global Detector Registry.
 Allows automatic discovery and invocation of detectors by modality.
 """
 
-try:
-    from app.detectors.base import BaseDetector
-except ImportError:
-    from backend.app.detectors.base import BaseDetector
+from .base import BaseDetector
 
 
 class DetectorRegistry:
