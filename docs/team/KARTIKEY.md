@@ -161,7 +161,7 @@ backend/
 - [ ] Ingesting an evidence file computes SHA-256/512, locks original permissions, and logs an audit entry.
 - [x] Audit log uses RFC 8785 canonical JSON hashing; tampering with any entry causes `verify_case_audit_chain` to fail.
 - [x] Native PDF detector (`pdf_document.py`) successfully detects incremental updates and font stream anomalies.
-- [ ] Fusion engine correctly marks contradictory high-confidence results as `INCONCLUSIVE`.
+- [x] Fusion engine correctly marks contradictory high-confidence results as `INCONCLUSIVE`.
 - [ ] Evidentiary assessment outputs all 4 axes with plain-language explanations.
 - [ ] ReportLab generates a valid, styled court PDF with embedded evidence visuals and digital signature.
 - [ ] All unit tests pass cleanly (`pytest backend/tests`).
